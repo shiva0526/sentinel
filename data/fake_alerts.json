@@ -1,0 +1,10 @@
+[
+  {"id": "ALT-001", "type": "failed_login", "source": "microsoft_defender", "ip": "185.220.101.45", "user": "admin@company.com", "description": "47 failed login attempts to /admin in 3 minutes", "timestamp": "2025-03-15T02:14:00Z", "raw_severity": "medium"},
+  {"id": "ALT-002", "type": "unusual_login_location", "source": "microsoft_defender", "ip": "103.21.244.0", "user": "john@company.com", "description": "User logged in from an unusual location: Nigeria", "timestamp": "2025-03-15T01:30:00Z", "raw_severity": "medium"},
+  {"id": "ALT-003", "type": "port_scan", "source": "microsoft_defender", "ip": "185.220.101.45", "user": null, "description": "Port scan detected across 200 ports", "timestamp": "2025-03-15T02:05:00Z", "raw_severity": "high"},
+  {"id": "ALT-004", "type": "malware_detected", "source": "microsoft_defender", "ip": "192.168.1.10", "user": "sarah@company.com", "description": "Suspicious file trojan.exe found in downloads folder", "timestamp": "2025-03-15T03:10:00Z", "raw_severity": "high"},
+  {"id": "ALT-005", "type": "cloudflare_healthcheck", "source": "microsoft_defender", "ip": "103.21.244.0", "user": null, "description": "Automated scan from external IP on port 80 and 443", "timestamp": "2025-03-15T01:00:00Z", "raw_severity": "low"},
+  {"id": "ALT-006", "type": "data_exfiltration", "source": "microsoft_defender", "ip": "185.220.101.45", "user": "mike@company.com", "description": "Large outbound data transfer of 2GB to unknown IP at 3AM", "timestamp": "2025-03-15T03:00:00Z", "raw_severity": "high"},
+  {"id": "ALT-007", "type": "new_admin_account", "source": "microsoft_defender", "ip": null, "user": "unknown@company.com", "description": "New administrator account created at 2:10AM with no approval record", "timestamp": "2025-03-15T02:10:00Z", "raw_severity": "high"},
+  {"id": "ALT-008", "type": "routine_backup", "source": "microsoft_defender", "ip": "10.0.0.1", "user": "backup_service", "description": "Nightly backup process transferred files to backup server", "timestamp": "2025-03-15T02:00:00Z", "raw_severity": "low"}
+]
