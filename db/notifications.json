@@ -1,0 +1,8 @@
+[
+  {
+    "to": "admin@sentinel.local",
+    "timestamp": "2026-04-10T11:05:39.923356",
+    "priority": "LOW",
+    "message": "MCP test notification \u2014 server is operational."
+  }
+]

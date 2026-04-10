@@ -300,7 +300,7 @@ def run_investigation_agent(alerts: List[Dict]) -> List[Dict]:
             verdict = result.get("verdict", "SUSPICIOUS")
             explanation = result.get("explanation", "No explanation.")
             confidence = result.get("confidence", "LOW")
-            print(f"  [API] VirusTotal: {vt_info}")
+            print(f"  [API] VirusTotal: {result.get('vt_data', 'N/A')}")
         except Exception as e:
             verdict = "SUSPICIOUS"
             explanation = str(e)

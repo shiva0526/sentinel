@@ -19,6 +19,8 @@ from agents.self_healing_agent import trigger_healing
 from agents.specialized_agents import run_code_review_agent, run_consulting_agent, run_training_agent
 from agentic_ids import run_agentic_ids_pipeline
 
+from fastapi.staticfiles import StaticFiles
+
 load_dotenv()
 app = FastAPI(title="SentinelAI API", description="AI Security Alert Assistant")
 
@@ -31,15 +33,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Serve static files from the React build folder
+# We mount everything except the root and API routes
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
 @app.get("/", response_class=HTMLResponse)
 def get_dashboard():
-    """Serves the main dashboard HTML."""
+    """Serves the built React dashboard."""
     try:
-        html_path = os.path.join("frontend", "index.html")
+        html_path = os.path.join("frontend", "dist", "index.html")
         with open(html_path, "r", encoding="utf-8") as f:
             return f.read()
     except Exception as e:
-        return f"<h1>Error loading dashboard</h1><p>{str(e)}</p>"
+        return f"<h1>Error loading dashboard</h1><p>Ensure you have run 'npm run build' in the frontend folder. Error: {str(e)}</p>"
 
 class ScanRequest(BaseModel):
     url: str
@@ -207,3 +213,16 @@ def trigger_service(request: dict):
         return {"service": name, "result": summary}
     except Exception as e:
         return {"service": name, "result": f"Agent error: {str(e)}"}
+
+# Mount the static assets and the dist folder at the end
+# This ensures API routes take priority
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
+# Optional: serve other root-level static files from dist
+@app.get("/{file_name}")
+def get_static_file(file_name: str):
+    file_path = os.path.join("frontend", "dist", file_name)
+    if os.path.exists(file_path):
+        from fastapi.responses import FileResponse
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="File not found")

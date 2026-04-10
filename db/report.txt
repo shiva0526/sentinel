@@ -2,20 +2,29 @@
      SENTINEL AI: INCIDENT & THREAT INTELLIGENCE     
 =======================================================
 EXECUTIVE SUMMARY:
-The system processed 6 alerts. Detected 0 CRITICAL threats requiring immediate intervention, 6 SUSPICIOUS events requiring monitoring, and determined 0 to be routine/safe.
+The system processed 12 alerts. Detected 5 CRITICAL threats requiring immediate intervention, 5 SUSPICIOUS events requiring monitoring, and determined 2 to be routine/safe.
 
 --- [ 1. CRITICAL THREATS ] ---
-No critical threats detected.
+[!] failed_login - 47 failed login attempts to /admin in 3 minutes (Source IP: 185.220.101.45)
+   Reason: Critical security threat identified: failed_login with severity medium.
+[!] port_scan - Port scan detected across 200 ports (Source IP: 185.220.101.45)
+   Reason: Critical security threat identified: port_scan with severity high.
+[!] malware_detected - Suspicious file trojan.exe found in downloads folder (Source IP: 192.168.1.10)
+   Reason: Malware detected on system - immediate action required.
+[!] data_exfiltration - Large outbound data transfer of 2GB to unknown IP at 3AM (Source IP: 185.220.101.45)
+   Reason: Data exfiltration attempt detected - data loss likely.
+[!] new_admin_account - New administrator account created at 2:10AM with no approval record (Source IP: None)
+   Reason: Unauthorized admin account creation detected - possible privilege escalation.
 
 --- [ 2. THINGS TO WATCH ] ---
-[?] port_scan - Port scan detected across 200 ports
-[?] malware_detected - Suspicious file trojan.exe found in downloads folder
-[?] cloudflare_healthcheck - Automated scan from external IP on port 80 and 443
-[?] data_exfiltration - Large outbound data transfer of 2GB to unknown IP at 3AM
-[?] new_admin_account - New administrator account created at 2:10AM with no approval record
-[?] routine_backup - Nightly backup process transferred files to backup server
+[?] open_port - Port 80 is open and potentially exposed.
+[?] open_port - Port 443 is open and potentially exposed.
+[?] missing_security_header - Missing recommended security header: X-Frame-Options
+[?] missing_security_header - Missing recommended security header: Content-Security-Policy
+[?] unusual_login_location - User logged in from an unusual location: Nigeria
 
 --- [ 3. FALSE POSITIVES DISMISSED ] ---
-No false positives registered.
+[*] cloudflare_healthcheck : Filtered as routine activity.
+[*] routine_backup : Filtered as routine activity.
 
 =======================================================
