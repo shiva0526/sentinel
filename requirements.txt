@@ -6,3 +6,7 @@ requests
 google-generativeai
 langgraph
 urllib3
+mcp
+numpy
+pandas
+scikit-learn

@@ -3,10 +3,19 @@ import os
 import json
 import datetime
 from typing import List, Optional
+
 from mcp.server import Server
 from mcp.server.models import InitializationOptions
 import mcp.types as types
-from mcp.server.stdio import stdio_server
+from mcp.server.sse import SseServerTransport
+
+from starlette.applications import Starlette
+from starlette.routing import Route, Mount
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
+import uvicorn
 
 # Define the storage paths
 _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -20,6 +29,9 @@ server = Server("Sentinel-SOC-MCP")
 
 # Ensure DB exists
 os.makedirs(DB_PATH, exist_ok=True)
+
+# SSE Transport — clients POST to /messages/
+sse = SseServerTransport("/messages/")
 
 # --- MCP TOOLS ---
 
@@ -236,12 +248,37 @@ async def handle_call_tool(
 
     return [types.TextContent(type="text", text=f"Unknown tool: {name}")]
 
-async def main():
-    # Run the server using stdin/stdout streams
-    async with stdio_server() as (read_stream, write_stream):
+
+# --- HTTP / SSE ENDPOINTS ---
+
+async def handle_health(request: Request) -> JSONResponse:
+    """Health check endpoint."""
+    return JSONResponse({"status": "ok", "server": "SentinelAI MCP"})
+
+
+async def handle_sse(request: Request) -> Response:
+    """SSE endpoint with bearer token authorization."""
+    # --- Authorization Check ---
+    expected_secret = os.getenv("MCP_SECRET")
+    if expected_secret:
+        auth_header = request.headers.get("Authorization", "")
+        if not auth_header.startswith("Bearer "):
+            return JSONResponse(
+                {"error": "Missing Authorization bearer token"},
+                status_code=401
+            )
+        provided_token = auth_header[len("Bearer "):]
+        if provided_token != expected_secret:
+            return JSONResponse(
+                {"error": "Invalid bearer token"},
+                status_code=401
+            )
+
+    # --- Establish SSE session ---
+    async with sse.connect_sse(request.scope, request.receive, request._send) as streams:
         await server.run(
-            read_stream,
-            write_stream,
+            streams[0],
+            streams[1],
             InitializationOptions(
                 server_name="Sentinel-SOC-MCP",
                 server_version="1.0.0",
@@ -250,6 +287,28 @@ async def main():
                 ),
             ),
         )
+    return Response()
+
+
+# --- STARLETTE APP ---
+
+app = Starlette(
+    routes=[
+        Route("/health", handle_health, methods=["GET"]),
+        Route("/sse", handle_sse, methods=["GET"]),
+        Mount("/messages/", app=sse.handle_post_message),
+    ],
+    middleware=[
+        Middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+    ],
+)
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    uvicorn.run(app, host="0.0.0.0", port=8080)
