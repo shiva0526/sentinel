@@ -153,7 +153,7 @@ def run_correlation_agent(processed_alerts: List[Dict]) -> List[Dict]:
         inc_key = inc.get("key", "unknown")
         inc_type = inc.get("type", "UNKNOWN")
 
-        print(f"[Correlation Agent] Incident: {alert_count} alerts grouped by {inc_type} → {inc_key}")
+        print(f"[Correlation Agent] Incident: {alert_count} alerts grouped by {inc_type} - {inc_key}")
 
         summary = analyze_incident_with_claude(inc)
         inc["summary"] = summary
@@ -163,8 +163,8 @@ def run_correlation_agent(processed_alerts: List[Dict]) -> List[Dict]:
         preview = summary.replace('\n', ' ')
         if len(preview) > 80:
             preview = preview[:80] + "..."
-        print(f"  → Claude: \"{preview}\"\n")
+        print(f"  [AI] Claude: \"{preview}\"\n")
 
-    print(f"[Correlation Agent] Done — {len(final_incidents)} incidents identified.")
+    print(f"[Correlation Agent] Done - {len(final_incidents)} incidents identified.")
     print("--- AGENT 4: CORRELATION AGENT DONE ---\n")
     return final_incidents

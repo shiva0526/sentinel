@@ -6,36 +6,33 @@
     <title>SentinelAI Dashboard</title>
     <style>
         :root {
-            --bg: #f9fafb;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --card-bg: #ffffff;
-            --border: #e5e7eb;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
+            --bg: #0a0a0b;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --card-bg: #111113;
+            --border: #27272a;
+            --primary: #f97316; /* Orange accent */
+            --primary-hover: #ea580c;
+            --accent: #f97316;
             
-            --critical-bg: #fee2e2;
-            --critical-text: #991b1b;
-            --suspicious-bg: #fef9c3;
-            --suspicious-text: #854d0e;
-            --fp-bg: #dcfce7;
-            --fp-text: #166534;
+            --critical-bg: #7f1d1d;
+            --critical-text: #fecaca;
+            --suspicious-bg: #713f12;
+            --suspicious-text: #fef08a;
+            --fp-bg: #14532d;
+            --fp-text: #bbf7d0;
+            
+            --hex-size: 180px;
         }
 
-        @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: light) {
             :root {
-                --bg: #111827;
-                --text-main: #f9fafb;
-                --text-muted: #9ca3af;
-                --card-bg: #1f2937;
-                --border: #374151;
-                
-                --critical-bg: #7f1d1d;
-                --critical-text: #fecaca;
-                --suspicious-bg: #713f12;
-                --suspicious-text: #fef08a;
-                --fp-bg: #14532d;
-                --fp-text: #bbf7d0;
+                --bg: #f9fafb;
+                --text-main: #111827;
+                --text-muted: #6b7280;
+                --card-bg: #ffffff;
+                --border: #e5e7eb;
+                --primary: #f97316;
             }
         }
 
@@ -186,14 +183,221 @@
         .alert-meta { color: var(--text-muted); font-size: 0.875rem; }
         .alert-desc { margin: 0.5rem 0; font-weight: 500;}
         .alert-exp { margin: 0.5rem 0; color: var(--text-muted); font-size: 0.95rem; }
+
+        /* Services Hex Grid */
+        .services-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .services-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-main);
+        }
+
+        .hexagon-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .hex-wrapper {
+            position: relative;
+            width: var(--hex-size);
+            height: calc(var(--hex-size) * 1.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hex-wrapper:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .hexagon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .hex-wrapper:hover .hexagon {
+            background: linear-gradient(135deg, #1f1f23, #2d2d33);
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.3);
+        }
+
+        .hex-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.5));
+        }
+
+        .hex-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* Offset alignment for hexagon look */
+        .hexagon-grid .hex-wrapper:nth-child(even) {
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .hexagon-grid .hex-wrapper:nth-child(even) { margin-top: 0; }
+        }
+
+        /* Dialog / Modal */
+        #modalOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            max-width: 500px;
+            width: 90%;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            border: 2px solid var(--accent);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 4rem; color: var(--accent); margin-bottom: 1rem; }
+        .modal h2 { margin: 0 0 1rem 0; color: var(--accent); }
+        .modal p { color: var(--text-main); margin-bottom: 1.5rem; text-align: left; background: rgba(249, 115, 22, 0.1); padding: 1rem; border-radius: 0.5rem; }
+        .modal button { width: 100%; background: var(--accent); }
+        .modal button:hover { background: var(--primary-hover); }
+
     </style>
 </head>
 <body>
+    <script>
+        async function triggerService(name) {
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<div class="hexagon"><div class="spinner" style="width:20px; height:20px; border-width:2px; margin:0;"></div></div>';
+            
+            try {
+                const response = await fetch('/trigger_service', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name })
+                });
+                const data = await response.json();
+                
+                document.getElementById('modalOverlay').style.display = 'flex';
+                document.getElementById('modalContent').innerText = data.result;
+                document.querySelector('.modal h2').innerText = "SERVICE ACTIVATED: " + name;
+                document.getElementById('modalInstruction').innerText = "Sentinel Intelligence Report Ready";
+                
+            } catch (err) {
+                alert("Error connecting to service agent: " + err);
+            } finally {
+                btn.innerHTML = originalHtml;
+            }
+        }
+    </script>
+    <!-- Notification Dialog -->
+    <div id="modalOverlay">
+        <div class="modal">
+            <div class="modal-icon">🔔</div>
+            <h2>AUTONOMOUS NOTIFICATION SENT</h2>
+            <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center; background: none; margin-bottom: 0.5rem;">The following incident alert has been sent to the website owner:</p>
+            <div id="modalContent" style="text-align: left; font-family: monospace; font-size: 0.85rem; background: #111827; color: #10b981; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; border: 1px solid #374151;"></div>
+            <p id="modalInstruction" style="font-weight: bold; background: none; text-align: center; color: #ef4444;"></p>
+            <button onclick="closeModal()">Close Preview</button>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1>SentinelAI</h1>
-            <p class="subtitle">AI-Powered Security Alert Assistant</p>
+            <p class="subtitle">Autonomous Agentic SOC & Security Intelligence</p>
         </header>
+
+        <!-- Services Section -->
+        <section class="services-section">
+            <h2>Services</h2>
+            <div class="hexagon-grid">
+                <div class="hex-wrapper" onclick="triggerService('Penetration Testing')">
+                    <div class="hexagon">
+                        <div class="hex-icon">💻</div>
+                        <p class="hex-title">Penetration Testing</p>
+                    </div>
+                </div>
+                <div class="hex-wrapper" onclick="triggerService('Security Consulting')">
+                    <div class="hexagon">
+                        <div class="hex-icon">💼</div>
+                        <p class="hex-title">Security Consulting</p>
+                    </div>
+                </div>
+                <div class="hex-wrapper" onclick="triggerService('Secure Code Reviews')">
+                    <div class="hexagon">
+                        <div class="hex-icon">🔍</div>
+                        <p class="hex-title">Secure Code Reviews</p>
+                    </div>
+                </div>
+                <div class="hex-wrapper" onclick="triggerService('Threat Emulation')">
+                    <div class="hexagon">
+                        <div class="hex-icon">🕵️</div>
+                        <p class="hex-title">Threat Emulation</p>
+                    </div>
+                </div>
+                <div class="hex-wrapper" onclick="triggerService('Vulnerability Assessments')">
+                    <div class="hexagon">
+                        <div class="hex-icon">🎯</div>
+                        <p class="hex-title">Vulnerability Assessments</p>
+                    </div>
+                </div>
+                <div class="hex-wrapper" onclick="triggerService('Training')">
+                    <div class="hexagon">
+                        <div class="hex-icon">🎓</div>
+                        <p class="hex-title">Training</p>
+                    </div>
+                </div>
+                <div class="hex-wrapper" onclick="triggerService('Incident Response')">
+                    <div class="hexagon">
+                        <div class="hex-icon">🚨</div>
+                        <p class="hex-title">Incident Response</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <form class="scan-form" id="scanForm">
             <input type="url" id="urlInput" placeholder="https://yoursite.com" value="http://testphp.vulnweb.com" required>
@@ -226,18 +430,22 @@
             </div>
 
             <div class="report-section">
-                <h2>Morning Report</h2>
+                <h2>Incident Intelligence Report</h2>
                 <pre id="reportText">No report available.</pre>
             </div>
 
             <div class="alerts-section">
-                <h2>All Alerts</h2>
+                <h2>Forensic Alert Logs</h2>
                 <div id="alertsList"></div>
             </div>
         </div>
     </div>
 
     <script>
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
         document.getElementById('scanForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const url = document.getElementById('urlInput').value;
@@ -250,7 +458,6 @@
             results.style.display = 'none';
 
             try {
-                // Pointing strictly to local API
                 const response = await fetch('http://127.0.0.1:8000/scan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -273,9 +480,7 @@
                 data.alerts.forEach(alert => {
                     const div = document.createElement('div');
                     div.className = 'alert-item';
-                    
                     const verdict = alert.verdict || 'UNKNOWN';
-                    
                     div.innerHTML = `
                         <div class="alert-header">
                             <strong>${alert.type}</strong>
@@ -289,6 +494,13 @@
                     `;
                     alertsList.appendChild(div);
                 });
+
+                // Trigger Notification Modal if Critical
+                if (data.notification) {
+                    document.getElementById('modalContent').innerHTML = data.notification.message.replace(/\n/g, '<br>');
+                    document.getElementById('modalInstruction').innerText = "PRIORITY: " + data.notification.priority;
+                    document.getElementById('modalOverlay').style.display = 'flex';
+                }
 
                 results.style.display = 'block';
             } catch (error) {

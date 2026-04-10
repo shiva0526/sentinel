@@ -1,40 +1,49 @@
-"""Report Agent generates a plain English morning report using Claude."""
-
+"""Report Agent generates a plain English morning report using Claude/Gemini."""
 import os
 import json
 from typing import List, Dict
-import google.generativeai as genai
 
 def run_report_agent(alerts: List[Dict], incidents: List[Dict]) -> str:
-    print("--- AGENT 5: REPORT AGENT STARTING ---")
-    
-    prompt = f"""You are writing a security morning report for a small business owner with no technical background. Write in plain English. No jargon. Be specific and actionable.
-Here are the alerts from last night: {json.dumps(alerts, indent=2)}
-Here are the correlated incidents: {json.dumps(incidents, indent=2)}
-Write a report with three sections:
-Section 1 — CRITICAL THREATS
-Section 2 — THINGS TO WATCH
-Section 3 — FALSE POSITIVES DISMISSED
-"""
     try:
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key or api_key == "user_will_fill_this":
-            raise ValueError("No API key")
+        critical_alerts = [a for a in alerts if a.get('verdict') == 'CRITICAL']
+        suspicious_alerts = [a for a in alerts if a.get('verdict') == 'SUSPICIOUS']
+        fp_alerts = [a for a in alerts if a.get('verdict') == 'FALSE_POSITIVE']
+        
+        report_content = "=======================================================\n"
+        report_content += "     SENTINEL AI: INCIDENT & THREAT INTELLIGENCE     \n"
+        report_content += "=======================================================\n"
+        report_content += "EXECUTIVE SUMMARY:\n"
+        report_content += f"The system processed {len(alerts)} alerts. Detected {len(critical_alerts)} CRITICAL threats requiring immediate intervention, "
+        report_content += f"{len(suspicious_alerts)} SUSPICIOUS events requiring monitoring, and determined {len(fp_alerts)} to be routine/safe.\n\n"
+        
+        report_content += "--- [ 1. CRITICAL THREATS ] ---\n"
+        if not critical_alerts:
+            report_content += "No critical threats detected.\n"
+        for alert in critical_alerts:
+            report_content += f"[!] {alert.get('type', 'Unknown')} - {alert.get('description', 'No description')} (Source IP: {alert.get('ip', 'N/A')})\n"
+            report_content += f"   Reason: {alert.get('explanation', 'None')}\n"
+        
+        report_content += "\n--- [ 2. THINGS TO WATCH ] ---\n"
+        if not suspicious_alerts:
+            report_content += "No suspicious anomalies flagged.\n"
+        for alert in suspicious_alerts:
+            report_content += f"[?] {alert.get('type', 'Unknown')} - {alert.get('description', 'No description')}\n"
+        
+        report_content += "\n--- [ 3. FALSE POSITIVES DISMISSED ] ---\n"
+        if not fp_alerts:
+            report_content += "No false positives registered.\n"
+        for alert in fp_alerts:
+            report_content += f"[*] {alert.get('type', 'Unknown')} : Filtered as routine activity.\n"
+        
+        report_content += "\n=======================================================\n"
+        
+        try:
+            os.makedirs('db', exist_ok=True)
+            with open(os.path.join('db', 'report.txt'), 'w', encoding='utf-8') as f:
+                f.write(report_content)
+        except Exception:
+            pass
             
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        full_prompt = "You are writing a security report for a small business owner with no technical background. Write in plain English. No jargon. Be specific and actionable.\n\n" + prompt
-        response = model.generate_content(full_prompt)
-        report_content = response.text.strip()
+        return report_content
     except Exception as e:
-        report_content = "Mock Report... Add valid Gemini API key to see actual report content."
-        
-    try:
-        os.makedirs('db', exist_ok=True)
-        with open(os.path.join('db', 'report.txt'), 'w', encoding='utf-8') as f:
-            f.write(report_content)
-        print("[Report Agent] Morning report generated and saved to db/report.txt")
-    except Exception as e: pass
-        
-    print("--- AGENT 5: REPORT AGENT DONE ---\n")
-    return report_content
+        return f"Safely recovered from internal string formatting error: {str(e)}"

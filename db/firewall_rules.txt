@@ -1,0 +1,6 @@
+[2026-04-10T08:28:05.061186] BLOCK 11.216.139.154 - Verified malicious agentic trigger
+[2026-04-10T08:32:02.897552] BLOCK 135.77.91.160 - Verified malicious agentic trigger
+[2026-04-10T08:38:11.945894] BLOCK 192.212.62.117 - Verified malicious agentic trigger
+[2026-04-10T08:41:57.308276] BLOCK 156.46.56.80 - Verified malicious agentic trigger
+[2026-04-10T08:48:30.150596] BLOCK 100.120.186.238 - Verified malicious agentic trigger
+[2026-04-10T08:48:31.392117] BLOCK 155.56.7.219 - Verified malicious agentic trigger

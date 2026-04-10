@@ -1,0 +1,354 @@
+--- AGENT 1: ATTACK AGENT STARTING ---
+[Attack Agent] Scanning http://testphp.vulnweb.com...
+[Attack Agent] 0 findings generated.
+--- AGENT 1: ATTACK AGENT DONE ---
+
+--- AGENT 2: INGESTION AGENT STARTING ---
+[Ingestion Agent] Database ready.
+[Ingestion Agent] Loaded 0 alerts from attack agent.
+[Ingestion Agent] Loaded 8 alerts from fake_alerts.json.
+[Ingestion Agent] 8 alerts waiting for investigation.
+--- AGENT 2: INGESTION AGENT DONE ---
+
+--- AGENT 3: INVESTIGATION AGENT STARTING ---
+[Investigation Agent] Investigating ALT-001: failed_login
+  -> VirusTotal: 17 engines flagged as malicious, 3 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Critical security threat identified: failed_login with severity medium.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : failed_login
+  [*] Source IP   : 185.220.101.45
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 185.220.101.45 blocked. Rule: iptables -I INPUT -s 185.220.101.45 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 185.220.101.45 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-001 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-002: unusual_login_location
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: SUSPICIOUS (MEDIUM confidence)
+  -> Alert requires investigation: unusual_login_location - VirusTotal no threats found.
+
+[Investigation Agent] Investigating ALT-003: port_scan
+  -> VirusTotal: 17 engines flagged as malicious, 3 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Critical security threat identified: port_scan with severity high.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : port_scan
+  [*] Source IP   : 185.220.101.45
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 185.220.101.45 blocked. Rule: iptables -I INPUT -s 185.220.101.45 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 185.220.101.45 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-003 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-004: malware_detected
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Malware detected on system - immediate action required.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : malware_detected
+  [*] Source IP   : 192.168.1.10
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 192.168.1.10 blocked. Rule: iptables -I INPUT -s 192.168.1.10 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 192.168.1.10 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-004 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-005: cloudflare_healthcheck
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: FALSE_POSITIVE (HIGH confidence)
+  -> Alert appears to be routine activity (cloudflare_healthcheck). No threat indicators found.
+
+[Investigation Agent] Investigating ALT-006: data_exfiltration
+  -> VirusTotal: 17 engines flagged as malicious, 3 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Data exfiltration attempt detected - data loss likely.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : data_exfiltration
+  [*] Source IP   : 185.220.101.45
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 185.220.101.45 blocked. Rule: iptables -I INPUT -s 185.220.101.45 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 185.220.101.45 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-006 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-007: new_admin_account
+  -> VirusTotal: No IP address provided
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Unauthorized admin account creation detected - possible privilege escalation.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : new_admin_account
+  [*] Source IP   : None
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Input validation error: None is not of type 'string'
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Input validation error: None is not of type 'string'
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-008: routine_backup
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: FALSE_POSITIVE (HIGH confidence)
+  -> Alert appears to be routine activity (routine_backup). No threat indicators found.
+
+[Investigation Agent] Done — 5 critical, 1 suspicious, 2 false positives.
+--- AGENT 3: INVESTIGATION AGENT DONE ---
+
+--- AGENT 4: CORRELATION AGENT STARTING ---
+[Correlation Agent] Found 4 potential incidents. Analyzing with Claude...
+Correlation Agent Error: 'charmap' codec can't encode character '\u2192' in position 61: character maps to <undefined>
+[SELF-HEAL] Fatal: Healing agent itself failed: 'charmap' codec can't encode character '\U0001f6a8' in position 3: character maps to <undefined>
+--- AGENT 6: REMEDIATION AGENT STARTING ---
+  [Remediation] Using fallback for ALT-001: NotFound
+  [Remediation] Using fallback for ALT-003: NotFound
+  [Remediation] Using fallback for ALT-004: NotFound
+  [Remediation] Using fallback for ALT-006: NotFound
+  [Remediation] Using fallback for ALT-007: NotFound
+[Remediation Agent] Fix steps generated for 5 critical alerts.
+--- AGENT 6: REMEDIATION AGENT DONE ---
+
+[Notification Agent] Error: 'charmap' codec can't encode character '\U0001f4e3' in position 3: character maps to <undefined>
+
+===========================================================
+   SENTINEL AI: MCP-ENHANCED AGENTIC SOC PIPELINE
+===========================================================
+
+[*] Analyzing URL: http://testphp.vulnweb.com
+[*] Simulating Network Traffic Capture...
+[*] ML Traffic Analysis: MALICIOUS (Entropy: 6.86)
+
+[AGENT: ThreatHunter] Proactive background sweep initiated...
+
+[*] Agentic Decision Engine: Fusing Intelligence via MCP...
+[AGENT: RedTeam] Requesting MCP Sandbox Verification...
+[AGENT: RedTeam] Sandbox Results: INFECTION_STAGED
+[AGENT: Deception] Requesting MCP Redirection for 104.129.224.232...
+[AGENT: Deception] MCP Result: SUCCESS: Traffic from 104.129.224.232 redirected to Sentinel-Honeypot-Alpha.
+
+--- EXECUTING MCP-MANAGED RESPONSE ---
+[AGENT: Firewall] Generating WAF rule via MCP...
+[AGENT: Firewall] MCP Result: SUCCESS: WAF policy updated with rule: BLOCK Directory Traversal payload targeting 
+[*] MCP Actions completed successfully.
+
+INFO:     127.0.0.1:63981 - "POST /scan HTTP/1.1" 200 OK
+--- AGENT 1: ATTACK AGENT STARTING ---
+[Attack Agent] Scanning https://www.akashbhumi.com/...
+[Attack Agent] Found: Port 80 is open
+[Attack Agent] Found: Port 443 is open
+[Attack Agent] Found: Missing security header X-Frame-Options
+[Attack Agent] Found: Missing security header Content-Security-Policy
+[Attack Agent] Found: Admin page exposed at /wp-admin
+[Attack Agent] 5 findings generated.
+--- AGENT 1: ATTACK AGENT DONE ---
+
+--- AGENT 2: INGESTION AGENT STARTING ---
+[Ingestion Agent] Database ready.
+[Ingestion Agent] Loaded 5 alerts from attack agent.
+[Ingestion Agent] Loaded 8 alerts from fake_alerts.json.
+[Ingestion Agent] 13 alerts waiting for investigation.
+--- AGENT 2: INGESTION AGENT DONE ---
+
+--- AGENT 3: INVESTIGATION AGENT STARTING ---
+[Investigation Agent] Investigating ATK-PORT-80: open_port
+  -> VirusTotal: 2 engines flagged as malicious, 1 suspicious
+  -> Verdict: SUSPICIOUS (LOW confidence)
+  -> Alert requires investigation: open_port - VirusTotal found 2 threats.
+
+[Investigation Agent] Investigating ATK-PORT-443: open_port
+  -> VirusTotal: 2 engines flagged as malicious, 1 suspicious
+  -> Verdict: SUSPICIOUS (LOW confidence)
+  -> Alert requires investigation: open_port - VirusTotal found 2 threats.
+
+[Investigation Agent] Investigating ATK-HDR-X-FRAME-OPTIONS: missing_security_header
+  -> VirusTotal: 2 engines flagged as malicious, 1 suspicious
+  -> Verdict: SUSPICIOUS (LOW confidence)
+  -> Alert requires investigation: missing_security_header - VirusTotal found 2 threats.
+
+[Investigation Agent] Investigating ATK-HDR-CONTENT-SECURITY-POLICY: missing_security_header
+  -> VirusTotal: 2 engines flagged as malicious, 1 suspicious
+  -> Verdict: SUSPICIOUS (LOW confidence)
+  -> Alert requires investigation: missing_security_header - VirusTotal found 2 threats.
+
+[Investigation Agent] Investigating ATK-PATH-wp-admin: exposed_path
+  -> VirusTotal: 2 engines flagged as malicious, 1 suspicious
+  -> Verdict: SUSPICIOUS (LOW confidence)
+  -> Alert requires investigation: exposed_path - VirusTotal found 2 threats.
+
+[Investigation Agent] Investigating ALT-001: failed_login
+  -> VirusTotal: 17 engines flagged as malicious, 3 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Critical security threat identified: failed_login with severity medium.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : failed_login
+  [*] Source IP   : 185.220.101.45
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 185.220.101.45 blocked. Rule: iptables -I INPUT -s 185.220.101.45 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 185.220.101.45 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-001 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-002: unusual_login_location
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: SUSPICIOUS (MEDIUM confidence)
+  -> Alert requires investigation: unusual_login_location - VirusTotal no threats found.
+
+[Investigation Agent] Investigating ALT-003: port_scan
+  -> VirusTotal: 17 engines flagged as malicious, 3 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Critical security threat identified: port_scan with severity high.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : port_scan
+  [*] Source IP   : 185.220.101.45
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 185.220.101.45 blocked. Rule: iptables -I INPUT -s 185.220.101.45 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 185.220.101.45 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-003 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-004: malware_detected
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Malware detected on system - immediate action required.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : malware_detected
+  [*] Source IP   : 192.168.1.10
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 192.168.1.10 blocked. Rule: iptables -I INPUT -s 192.168.1.10 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 192.168.1.10 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-004 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-005: cloudflare_healthcheck
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: FALSE_POSITIVE (HIGH confidence)
+  -> Alert appears to be routine activity (cloudflare_healthcheck). No threat indicators found.
+
+[Investigation Agent] Investigating ALT-006: data_exfiltration
+  -> VirusTotal: 17 engines flagged as malicious, 3 suspicious
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Data exfiltration attempt detected - data loss likely.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : data_exfiltration
+  [*] Source IP   : 185.220.101.45
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: block_ip
+  [MCP Result] SUCCESS: IP 185.220.101.45 blocked. Rule: iptables -I INPUT -s 185.220.101.45 -j DROP
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Host 185.220.101.45 has been moved to isolation VLAN 999. All active connections dropped.
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Incident ALT-006 logged via MCP.
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-007: new_admin_account
+  -> VirusTotal: No IP address provided
+  -> Verdict: CRITICAL (HIGH confidence)
+  -> Unauthorized admin account creation detected - possible privilege escalation.
+
+
+  === MCP-POWERED AUTONOMOUS RESPONSE STARTING ===
+  [*] Threat Type : new_admin_account
+  [*] Source IP   : None
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: isolate_host
+  [MCP Result] Input validation error: None is not of type 'string'
+  [MCP Client] Connecting to Sentinel MCP Server...
+  [MCP Client] Calling tool: log_incident
+  [MCP Result] Input validation error: None is not of type 'string'
+  [DONE] MCP-managed response chain complete.
+
+[Investigation Agent] Investigating ALT-008: routine_backup
+  -> VirusTotal: 0 engines flagged as malicious, 0 suspicious
+  -> Verdict: FALSE_POSITIVE (HIGH confidence)
+  -> Alert appears to be routine activity (routine_backup). No threat indicators found.
+
+[Investigation Agent] Done — 5 critical, 6 suspicious, 2 false positives.
+--- AGENT 3: INVESTIGATION AGENT DONE ---
+
+--- AGENT 4: CORRELATION AGENT STARTING ---
+[Correlation Agent] Found 6 potential incidents. Analyzing with Claude...
+Correlation Agent Error: 'charmap' codec can't encode character '\u2192' in position 61: character maps to <undefined>
+[SELF-HEAL] Fatal: Healing agent itself failed: 'charmap' codec can't encode character '\U0001f6a8' in position 3: character maps to <undefined>
+--- AGENT 6: REMEDIATION AGENT STARTING ---
+  [Remediation] Using fallback for ALT-001: NotFound
+  [Remediation] Using fallback for ALT-003: NotFound
+  [Remediation] Using fallback for ALT-004: NotFound
+  [Remediation] Using fallback for ALT-006: NotFound
+  [Remediation] Using fallback for ALT-007: NotFound
+[Remediation Agent] Fix steps generated for 5 critical alerts.
+--- AGENT 6: REMEDIATION AGENT DONE ---
+
+[Notification Agent] Error: 'charmap' codec can't encode character '\U0001f4e3' in position 3: character maps to <undefined>
+
+===========================================================
+   SENTINEL AI: MCP-ENHANCED AGENTIC SOC PIPELINE
+===========================================================
+
+[*] Analyzing URL: https://www.akashbhumi.com/
+[*] Simulating Network Traffic Capture...
+[*] ML Traffic Analysis: NORMAL (Entropy: 4.54)
+
+[AGENT: ThreatHunter] Proactive background sweep initiated...
+
+[*] Agentic Decision Engine: Fusing Intelligence via MCP...
+
+--- EXECUTING MCP-MANAGED RESPONSE ---
+[*] MCP Actions completed successfully.
+
+INFO:     127.0.0.1:58325 - "POST /scan HTTP/1.1" 200 OK

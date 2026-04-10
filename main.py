@@ -2,6 +2,10 @@
 
 import sys
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from agents.attack_agent import run_attack_agent
 from agents.ingestion_agent import run_ingestion_agent
@@ -9,11 +13,21 @@ from agents.investigation_agent import run_investigation_agent
 from agents.correlation_agent import run_correlation_agent
 from agents.report_agent import run_report_agent
 from agents.remediation_agent import run_remediation_agent
+from agentic_ids import run_agentic_ids_pipeline
 
 def main():
     print("==================================================")
     print("   SENTINELAI — STARTING PIPELINE")
     print("==================================================\n")
+    
+    # Reset database to ensure fresh analysis
+    db_path = os.path.join('db', 'alerts.db')
+    if os.path.exists(db_path):
+        try:
+            os.remove(db_path)
+            print("[Main] Database reset for fresh analysis.\n")
+        except:
+            pass
     
     url = "http://testphp.vulnweb.com"
     if len(sys.argv) > 1:
@@ -36,6 +50,15 @@ def main():
     
     try: remediations = run_remediation_agent(investigated_alerts)
     except: pass
+    
+    # ---------------------------------------------------------
+    # NEW: Run Agentic Intrusion Detection & Response System
+    # ---------------------------------------------------------
+    try:
+        ids_decision = run_agentic_ids_pipeline(url)
+    except Exception as e:
+        print(f"[Main] Error running agentic IDS pipeline: {e}")
+        ids_decision = None
     
     total = len(investigated_alerts)
     critical = sum(1 for a in investigated_alerts if a.get('verdict') == 'CRITICAL')
